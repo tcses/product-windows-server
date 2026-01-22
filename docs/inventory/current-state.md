@@ -167,8 +167,9 @@ Current Windows server infrastructure includes:
 | CampusVue API | 1 | 🟢 Active |
 | CampusNexus Portal | 1 | 🟢 Active |
 | Web Applications | 8 | 🟢 Active |
+| Integration Services | 1 | 🟢 Active |
 | Perceptive Content | 1 | 🟢 Active |
-| **Total** | **14** | **Active** |
+| **Total** | **15** | **Active** |
 
 ---
 

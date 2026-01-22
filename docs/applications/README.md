@@ -40,7 +40,7 @@ This directory contains comprehensive documentation for all applications hosted 
 |----------|--------------|---------|--------|
 | CampusNexus | Web Client, API, Portal | EG-CNWEB-*, EG-CVAPI-*, EG-CNPORT-* | 🟢 Active |
 | Custom Apps | Multiple .NET apps | EG-WebApps-01-08 | 🟢 Active |
-| Integration | Services, Scheduled Tasks | EG-Integrate-* | 🟢 Active |
+| Integration | Services, Scheduled Tasks | EG-Integrate-01 | 🟢 Active |
 
 ---
 

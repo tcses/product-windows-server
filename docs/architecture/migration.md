@@ -171,6 +171,13 @@ Internet
 - Log files
 - Configuration files
 
+**Integration Server**:
+- **EG-Integrate-01 → PRD-Integrate-01**: Backup restore/clone method
+- Full server backup and restore
+- Preserve Windows services configuration
+- Preserve scheduled tasks
+- Preserve E: drive logs structure
+
 ### DNS Migration
 
 **DNS Updates**:

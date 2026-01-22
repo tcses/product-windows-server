@@ -163,6 +163,7 @@ Future state Windows server infrastructure includes:
 ### Phase 3: Production Migration
 - [ ] Deploy production CampusVue servers (PRD-CNWEB-*, PRD-CVAPI-*, PRD-CNPORT-*)
 - [ ] Deploy production web application servers (PRD-WebApps-*)
+- [ ] Migrate integration server (PRD-Integrate-01 via backup restore from EG-Integrate-01)
 - [ ] Configure Cloudflare Tunnel for production
 - [ ] Migrate applications and data
 - [ ] Cutover from EG-* to PRD-* servers
@@ -182,10 +183,11 @@ Future state Windows server infrastructure includes:
 | CampusVue API | 1 | 🟡 Planned | EG-CVAPI-01 |
 | CampusNexus Portal | 1 | 🟡 Planned | EG-CNPORT-01 |
 | Web Applications | 4 | 🟡 Planned | EG-WebApps-01-08 (consolidated) |
+| Integration Services | 1 | 🟡 Planned | EG-Integrate-01 (backup restore) |
 | Test Servers | 2+ | 🟡 Planned | New test environment |
-| **Total Production** | **9** | **Planned** | **14 EG-* servers** |
+| **Total Production** | **10** | **Planned** | **15 EG-* servers** |
 
-**Consolidation**: 14 EG-* servers → 9 PRD-* servers (optimized infrastructure)
+**Consolidation**: 15 EG-* servers → 10 PRD-* servers (optimized infrastructure)
 
 ---
 

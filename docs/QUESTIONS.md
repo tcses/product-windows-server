@@ -40,11 +40,13 @@ Questions that need answers to complete Windows server documentation.
 
 ### Integration Servers
 
-**Question 5**: What specific applications/services run on integration servers (EG-Integrate-*)?
+**Question 5**: What specific applications/services run on integration servers (EG-Integrate-01)?
 - Integration Engine - confirmed?
 - What other Windows services?
 - What scheduled tasks?
 - What applications with logs on E: drive?
+
+**Note**: EG-Integrate-01 is a new server (only 6 months old) and will be migrated via backup restore.
 
 ---
 

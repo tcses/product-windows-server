@@ -132,15 +132,18 @@ This document provides a comprehensive roster of all applications hosted on Wind
 
 **URL**: `https://integration.tcsedsystem.edu`
 
-**Backend Servers**: EG-Integrate-* (Windows/IIS)
+**Backend Servers**: EG-Integrate-01 (Windows/IIS)
 
-**Function**: Listener for Salesforce.com backend student lead PII data sync
+**Function**: Listener for Salesforce.com backend student lead PII data sync, custom Windows services, scheduled tasks
 
 **Infrastructure**:
 - Load Balancer: f5 (current) / Cloudflare Tunnel (planned)
 - SSL, CDN, WAF: Cloudflare
 - Backend: Adjacent SQL Cluster
 - Monitoring: Azure Arc, LogicMonitor, Datadog
+- Logs: E: drive application logs
+
+**Migration**: PRD-Integrate-01 via backup restore (EG-Integrate-01 is new, only 6 months old)
 
 ---
 
@@ -261,7 +264,7 @@ This document provides a comprehensive roster of all applications hosted on Wind
 | CampusNexus API | Production | EG-CVAPI-01 | 🟢 Active | Migrating to PRD-CVAPI-01 |
 | Academic Portal | Production | EG-CNPORT-01 | 🟢 Active | Migrating to PRD-CNPORT-01 |
 | Support Desk | Production | EG-WebApps-* | 🟢 Active | apps.tcsedsystem.edu |
-| Integration System | Production | EG-Integrate-* | 🟢 Active | integration.tcsedsystem.edu |
+| Integration System | Production | EG-Integrate-01 | 🟢 Active | integration.tcsedsystem.edu |
 | Custom Portals | Production | EG-WebApps-* | 🟢 Active | apps.{school}.edu |
 | Application Portals | Production | EG-WebApps-* | 🟢 Active | apply.{school}.edu |
 | Cashiering Site | Production | AWS EC2 | 🟢 Active | cashier.tcsedsystem.edu (AWS) |
