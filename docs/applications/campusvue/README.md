@@ -177,6 +177,12 @@ See [Future State Inventory](../inventory/future-state.md) for detailed migratio
 ## 📚 Related Documentation
 
 - **[URLs and Environments](URLS.md)** - Complete URL inventory
+- **[Install Checklist](CampusNexus-Install-Checklist.md)** - Prereqs and install steps
+- **[Install Troubleshooting](CampusNexus-Install-Troubleshooting.md)** - Install + SSL troubleshooting guide
+- **[Staff STS Notes](CampusNexus-Staff-STS.md)** - Runtime config and common errors
+- **[Core API Services](CampusNexus-Core-API-Services.md)** - WCF and legacy API requirements
+- **[Legacy Prerequisites](CampusNexus-Legacy-Prerequisites.md)** - Legacy install checklist
+- **[Hosting: Cloudflare + IIS](CampusNexus-Hosting-Cloudflare.md)** - WAF/DNS/logging notes
 - **[Application Roster](../roster.md)** - Complete application inventory
 - **[Architecture](../architecture.md)** - Overall architecture documentation
 - **[Inventory - Current State](../inventory/current-state.md)** - Current server inventory
