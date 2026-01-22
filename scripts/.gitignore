@@ -1,0 +1,9 @@
+# Cache folder - contains remote file listings
+cache/
+
+# Logs folder - contains script execution logs
+logs/
+
+# Temporary files
+*.tmp
+*.temp

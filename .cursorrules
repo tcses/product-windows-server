@@ -1,0 +1,117 @@
+# Windows Server Documentation - Cursor Rules
+
+**Repository Purpose**: Documentation and inventory for Windows Server infrastructure. This is a **documentation-only** repository.
+
+---
+
+## ⚠️ CRITICAL RULES
+
+### Production Server Access
+
+**INQUIRY/RESEARCH SCRIPTS ONLY**:
+- ✅ **Allowed**: Scripts that **read/inventory** remote production servers
+  - File system listings
+  - Directory scans
+  - Service queries
+  - Configuration discovery
+  - Log analysis (read-only)
+- ✅ **Allowed**: Scripts that **cache** remote data locally (gitignored)
+
+**NEVER RUN CONFIGURATION EDITS**:
+- ❌ **Prohibited**: Scripts that **modify** remote production servers
+- ❌ **Prohibited**: Scripts that **change** configuration
+- ❌ **Prohibited**: Scripts that **install** software
+- ❌ **Prohibited**: Scripts that **deploy** applications
+- ❌ **Prohibited**: Scripts that **update** services
+
+### Production Configuration Changes
+
+**Use Proper Tools**:
+- ✅ **Ansible**: Use `src-ansible-win` repository for all production automation
+- ✅ **Manual**: Hand-run production edits when appropriate
+- ✅ **Documentation**: Document changes in this repo, but execute elsewhere
+
+**This Repository**:
+- 📚 **Documentation only** - Inventory, architecture, planning
+- 🔍 **Research scripts** - Inquiry and discovery tools
+- ❌ **NOT for execution** - No production configuration changes
+
+---
+
+## 📋 Script Guidelines
+
+### Allowed Scripts (scripts/ folder)
+
+**Purpose**: Research, inventory, discovery
+
+**Examples**:
+- `Get-RemoteDriveInventory.ps1` - Read-only file system inventory
+- `Get-ServiceStatus.ps1` - Query service status (read-only)
+- `Get-ApplicationList.ps1` - List installed applications (read-only)
+- `Export-Configuration.ps1` - Export config for documentation (read-only)
+
+**Output**:
+- Save to `scripts/cache/` (gitignored)
+- Log to `scripts/logs/` (gitignored)
+- Never modify remote systems
+
+### Prohibited Scripts
+
+**Examples**:
+- ❌ `Install-Software.ps1` - Installation scripts
+- ❌ `Configure-IIS.ps1` - Configuration changes
+- ❌ `Deploy-Application.ps1` - Deployment scripts
+- ❌ `Update-Service.ps1` - Service modifications
+
+**If you need these**: Use `src-ansible-win` repository instead
+
+---
+
+## 🔗 Related Repositories
+
+### For Production Automation
+- **[src-ansible-win](https://github.com/tcses/src-ansible-win)** - Ansible playbooks for Windows server automation
+  - ✅ Use this for all production configuration changes
+  - ✅ Use this for deployment automation
+  - ✅ Use this for infrastructure as code
+
+### For Documentation
+- **product-windows-server** (this repo) - Documentation and inventory
+  - ✅ Use this for documentation
+  - ✅ Use this for research scripts
+  - ❌ Do NOT use this for production changes
+
+---
+
+## 📝 Documentation Updates
+
+**When to update this repo**:
+- ✅ After running research scripts (update inventory)
+- ✅ After Ansible deployments (document results)
+- ✅ After manual changes (document what was done)
+- ✅ Architecture changes (update architecture docs)
+
+**What NOT to do**:
+- ❌ Run production configuration scripts from this repo
+- ❌ Execute deployment scripts from this repo
+- ❌ Make direct production changes from this repo
+
+---
+
+## 🎯 Quick Reference
+
+| Action | Use This Repo? | Use Ansible? | Use Manual? |
+|--------|----------------|--------------|-------------|
+| Read/Inventory servers | ✅ Yes | ❌ No | ❌ No |
+| Document architecture | ✅ Yes | ❌ No | ❌ No |
+| Configure IIS | ❌ No | ✅ Yes | ✅ Yes |
+| Install software | ❌ No | ✅ Yes | ✅ Yes |
+| Deploy applications | ❌ No | ✅ Yes | ✅ Yes |
+| Query services | ✅ Yes | ❌ No | ❌ No |
+| Modify services | ❌ No | ✅ Yes | ✅ Yes |
+
+---
+
+**Last Updated**: January 2026  
+**Repository**: `product-windows-server`  
+**Purpose**: Documentation and research only

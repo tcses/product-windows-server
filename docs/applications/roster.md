@@ -227,24 +227,6 @@ This document provides a comprehensive roster of all applications hosted on Wind
 
 ---
 
-## 📊 Application Summary
-
-| Application | Environment | Servers | Status | Notes |
-|-------------|-------------|---------|--------|-------|
-| CampusNexus Web | Production | EG-CNWEB-01, 02, 03 | 🟢 Active | Migrating to PRD-CNWEB-* |
-| CampusNexus Web | Test | TST-CNWEB-* | 🟡 Planned | Workaround: newtestnexus.tcsedsystem.edu |
-| CampusNexus Web | Training | Training pool | 🟢 Active | trainnexus-lb.tcsedsystem.edu |
-| CampusNexus API | Production | EG-CVAPI-01 | 🟢 Active | Migrating to PRD-CVAPI-01 |
-| Academic Portal | Production | EG-CNPORT-01 | 🟢 Active | Migrating to PRD-CNPORT-01 |
-| Support Desk | Production | EG-WebApps-* | 🟢 Active | apps.tcsedsystem.edu |
-| Integration System | Production | EG-Integrate-01 | 🟢 Active | integration.tcsedsystem.edu |
-| Custom Portals | Production | EG-WebApps-* | 🟢 Active | apps.{school}.edu |
-| Application Portals | Production | EG-WebApps-* | 🔴 Deprecated (2025) | apply.{school}.edu |
-| Cashiering Site | Production | AWS EC2 | 🟢 Active | cashier.tcsedsystem.edu (AWS) |
-| Cashiering API | Production | EG-WebApps-* | 🟢 Active | service.tcsedsystem.edu |
-
----
-
 ## 🔴 Deprecated Applications (Historic Reference)
 
 ### Prospective Student Application Portals
