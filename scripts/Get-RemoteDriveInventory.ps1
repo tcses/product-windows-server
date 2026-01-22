@@ -3,11 +3,12 @@
 
 <#
 .SYNOPSIS
-    Inventory remote Windows server E: drive via SMB connection.
+    Inventory remote Windows server drive via SMB or PowerShell Remoting.
 
 .DESCRIPTION
-    Connects to remote server E$ administrative share and recursively lists
-    all directories and files. Output saved to JSON cache and execution log.
+    Connects to a remote server and recursively lists directories and files.
+    Supports SMB (UNC path) or PowerShell Remoting for faster scans.
+    Output saved to JSON cache and execution log.
 
 .PARAMETER ServerName
     Target server name (e.g., EG-INTEGRATE-01, EG-WebApps-01)
@@ -20,6 +21,15 @@
 
 .PARAMETER LogDir
     Log directory for execution logs (default: .\logs)
+
+.PARAMETER MaxDepth
+    Maximum directory depth to scan (default: 4)
+
+.PARAMETER UseRemoting
+    Use PowerShell Remoting (WinRM) instead of SMB
+
+.PARAMETER IncludeFiles
+    Include file listings in the inventory (default: true)
 
 .EXAMPLE
     .\Get-RemoteDriveInventory.ps1 -ServerName "EG-INTEGRATE-01" -DriveLetter "E"
@@ -41,6 +51,15 @@ param(
     
     [Parameter(Mandatory=$false)]
     [string]$LogDir = ".\logs"
+    ,
+    [Parameter(Mandatory=$false)]
+    [int]$MaxDepth = 4,
+    
+    [Parameter(Mandatory=$false)]
+    [bool]$UseRemoting = $false,
+    
+    [Parameter(Mandatory=$false)]
+    [bool]$IncludeFiles = $true
 )
 
 # Script configuration
@@ -50,7 +69,11 @@ $script:Inventory = @{
     ServerName = $ServerName
     DriveLetter = $DriveLetter
     ScanDate = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
-    RootPath = "\\$ServerName\$DriveLetter`$"
+    RootPath = if ($UseRemoting) { "$DriveLetter`:\" } else { "\\$ServerName\$DriveLetter`$" }
+    ServerRoot = "\\$ServerName\$DriveLetter`$"
+    ScanMethod = if ($UseRemoting) { "Remoting" } else { "SMB" }
+    MaxDepth = $MaxDepth
+    IncludeFiles = $IncludeFiles
     Directories = @()
     Files = @()
     Errors = @()
@@ -92,6 +115,19 @@ function Write-Log {
     Add-Content -Path $script:LogFile -Value $logMessage
 }
 
+function Get-RelativePath {
+    param(
+        [string]$FullPath,
+        [string]$RootPath
+    )
+
+    if ($FullPath.StartsWith($RootPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+        return $FullPath.Substring($RootPath.Length)
+    }
+
+    return $FullPath
+}
+
 function Get-RemoteDirectoryListing {
     param(
         [string]$Path,
@@ -120,7 +156,7 @@ function Get-RemoteDirectoryListing {
             $dirInfo = @{
                 Name = $dir.Name
                 FullPath = $dir.FullName
-                RelativePath = $dir.FullName.Replace($script:Inventory.RootPath, "")
+                RelativePath = Get-RelativePath -FullPath $dir.FullName -RootPath $script:Inventory.RootPath
                 CreationTime = $dir.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")
                 LastWriteTime = $dir.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss")
                 Depth = $Depth
@@ -132,23 +168,25 @@ function Get-RemoteDirectoryListing {
             Get-RemoteDirectoryListing -Path $dir.FullName -Depth ($Depth + 1) -MaxDepth $MaxDepth
         }
         
-        # Get files
-        $files = Get-ChildItem -Path $Path -File -ErrorAction SilentlyContinue
-        foreach ($file in $files) {
-            $fileInfo = @{
-                Name = $file.Name
-                FullPath = $file.FullName
-                RelativePath = $file.FullName.Replace($script:Inventory.RootPath, "")
-                Size = $file.Length
-                SizeKB = [math]::Round($file.Length / 1KB, 2)
-                SizeMB = [math]::Round($file.Length / 1MB, 2)
-                CreationTime = $file.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")
-                LastWriteTime = $file.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss")
-                Extension = $file.Extension
-                Depth = $Depth
+        if ($IncludeFiles) {
+            # Get files
+            $files = Get-ChildItem -Path $Path -File -ErrorAction SilentlyContinue
+            foreach ($file in $files) {
+                $fileInfo = @{
+                    Name = $file.Name
+                    FullPath = $file.FullName
+                    RelativePath = Get-RelativePath -FullPath $file.FullName -RootPath $script:Inventory.RootPath
+                    Size = $file.Length
+                    SizeKB = [math]::Round($file.Length / 1KB, 2)
+                    SizeMB = [math]::Round($file.Length / 1MB, 2)
+                    CreationTime = $file.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")
+                    LastWriteTime = $file.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss")
+                    Extension = $file.Extension
+                    Depth = $Depth
+                }
+                
+                $script:Inventory.Files += $fileInfo
             }
-            
-            $script:Inventory.Files += $fileInfo
         }
         
     } catch {
@@ -158,12 +196,122 @@ function Get-RemoteDirectoryListing {
     }
 }
 
+function Get-RemoteInventoryViaRemoting {
+    param(
+        [string]$TargetServer,
+        [string]$TargetDrive,
+        [int]$DepthLimit,
+        [bool]$IncludeFileEntries
+    )
+
+    $scriptBlock = {
+        param(
+            [string]$DriveLetter,
+            [int]$MaxDepth,
+            [bool]$IncludeFiles
+        )
+
+        $rootPath = "$DriveLetter`:\"
+        $result = [ordered]@{
+            RootPath = $rootPath
+            Directories = @()
+            Files = @()
+            Errors = @()
+        }
+
+        function Get-RelativePath {
+            param(
+                [string]$FullPath,
+                [string]$RootPath
+            )
+
+            if ($FullPath.StartsWith($RootPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+                return $FullPath.Substring($RootPath.Length)
+            }
+
+            return $FullPath
+        }
+
+        function Scan-Path {
+            param(
+                [string]$Path,
+                [int]$Depth
+            )
+
+            if ($Depth -gt $MaxDepth) {
+                return
+            }
+
+            try {
+                if (-not (Test-Path $Path)) {
+                    $result.Errors += "Path not found: $Path"
+                    return
+                }
+
+                $directories = Get-ChildItem -Path $Path -Directory -ErrorAction SilentlyContinue
+                foreach ($dir in $directories) {
+                    $result.Directories += [pscustomobject]@{
+                        Name = $dir.Name
+                        FullPath = $dir.FullName
+                        RelativePath = Get-RelativePath -FullPath $dir.FullName -RootPath $rootPath
+                        CreationTime = $dir.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")
+                        LastWriteTime = $dir.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss")
+                        Depth = $Depth
+                    }
+
+                    Scan-Path -Path $dir.FullName -Depth ($Depth + 1)
+                }
+
+                if ($IncludeFiles) {
+                    $files = Get-ChildItem -Path $Path -File -ErrorAction SilentlyContinue
+                    foreach ($file in $files) {
+                        $result.Files += [pscustomobject]@{
+                            Name = $file.Name
+                            FullPath = $file.FullName
+                            RelativePath = Get-RelativePath -FullPath $file.FullName -RootPath $rootPath
+                            Size = $file.Length
+                            SizeKB = [math]::Round($file.Length / 1KB, 2)
+                            SizeMB = [math]::Round($file.Length / 1MB, 2)
+                            CreationTime = $file.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")
+                            LastWriteTime = $file.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss")
+                            Extension = $file.Extension
+                            Depth = $Depth
+                        }
+                    }
+                }
+            } catch {
+                $result.Errors += "Error scanning $Path : $($_.Exception.Message)"
+            }
+        }
+
+        if (-not (Test-Path $rootPath)) {
+            $result.Errors += "Path not found: $rootPath"
+            return $result
+        }
+
+        Scan-Path -Path $rootPath -Depth 0
+        return $result
+    }
+
+    try {
+        return Invoke-Command -ComputerName $TargetServer -ScriptBlock $scriptBlock -ArgumentList $TargetDrive, $DepthLimit, $IncludeFileEntries -ErrorAction Stop
+    } catch {
+        $errorMsg = "Remoting failed for $TargetServer : $($_.Exception.Message)"
+        Write-Log $errorMsg "ERROR"
+        $script:Inventory.Errors += $errorMsg
+        return $null
+    }
+}
+
 # Main execution
 Write-Log "========================================" "INFO"
 Write-Log "Remote Drive Inventory Script" "INFO"
 Write-Log "Server: $ServerName" "INFO"
 Write-Log "Drive: $DriveLetter" "INFO"
 Write-Log "Root Path: $($script:Inventory.RootPath)" "INFO"
+Write-Log "Scan Method: $($script:Inventory.ScanMethod)" "INFO"
+Write-Log "Max Depth: $MaxDepth" "INFO"
+Write-Log "Include Files: $([bool]$IncludeFiles)" "INFO"
 Write-Log "========================================" "INFO"
 
 # Test connectivity
@@ -174,28 +322,40 @@ if (Test-Connection -ComputerName $ServerName -Count 1 -Quiet) {
     Write-Log "WARNING: Server may not be reachable" "WARN"
 }
 
-# Test SMB connection
-Write-Log "Testing SMB connection to $($script:Inventory.RootPath)..." "INFO"
-$rootPath = $script:Inventory.RootPath
-
-try {
-    if (Test-Path $rootPath) {
-        Write-Log "SMB connection successful" "INFO"
-    } else {
-        Write-Log "ERROR: Cannot access $rootPath" "ERROR"
-        Write-Log "Check permissions and network connectivity" "ERROR"
-        exit 1
-    }
-} catch {
-    Write-Log "ERROR: SMB connection failed: $($_.Exception.Message)" "ERROR"
-    exit 1
-}
-
 # Start inventory scan
 Write-Log "Starting directory scan..." "INFO"
 $startTime = Get-Date
 
-Get-RemoteDirectoryListing -Path $rootPath
+if ($UseRemoting) {
+    $remoteInventory = Get-RemoteInventoryViaRemoting -TargetServer $ServerName -TargetDrive $DriveLetter -DepthLimit $MaxDepth -IncludeFileEntries ([bool]$IncludeFiles)
+    if ($null -ne $remoteInventory) {
+        $script:Inventory.RootPath = $remoteInventory.RootPath
+        $script:Inventory.Directories = $remoteInventory.Directories
+        $script:Inventory.Files = $remoteInventory.Files
+        $script:Inventory.Errors += $remoteInventory.Errors
+    } else {
+        Write-Log "Remoting inventory failed; no data collected." "ERROR"
+    }
+} else {
+    # Test SMB connection
+    Write-Log "Testing SMB connection to $($script:Inventory.RootPath)..." "INFO"
+    $rootPath = $script:Inventory.RootPath
+
+    try {
+        if (Test-Path $rootPath) {
+            Write-Log "SMB connection successful" "INFO"
+        } else {
+            Write-Log "ERROR: Cannot access $rootPath" "ERROR"
+            Write-Log "Check permissions and network connectivity" "ERROR"
+            exit 1
+        }
+    } catch {
+        Write-Log "ERROR: SMB connection failed: $($_.Exception.Message)" "ERROR"
+        exit 1
+    }
+
+    Get-RemoteDirectoryListing -Path $rootPath -MaxDepth $MaxDepth
+}
 
 $endTime = Get-Date
 $duration = $endTime - $startTime

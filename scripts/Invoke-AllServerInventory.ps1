@@ -15,17 +15,40 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory=$false)]
-    [string]$ScriptPath = ".\Get-RemoteDriveInventory.ps1"
+    [string]$ScriptPath = ".\Get-RemoteDriveInventory.ps1",
+    
+    [Parameter(Mandatory=$false)]
+    [string]$InventoryConfigPath = "..\config\inventory\servers.json",
+    
+    [Parameter(Mandatory=$false)]
+    [int]$MaxDepth = 4,
+    
+    [Parameter(Mandatory=$false)]
+    [bool]$UseRemoting = $true,
+    
+    [Parameter(Mandatory=$false)]
+    [bool]$IncludeFiles = $true
 )
 
 $ErrorActionPreference = "Continue"
 
-# Target servers for E: drive inventory
-$targetServers = @(
-    @{ ServerName = "EG-INTEGRATE-01"; DriveLetter = "E"; Description = "Integration Server" },
-    @{ ServerName = "EG-WebApps-01"; DriveLetter = "E"; Description = "Web Applications Server #1" },
-    @{ ServerName = "EG-WebApps-05"; DriveLetter = "E"; Description = "Web Applications Server #5" }
-)
+# Load target servers from inventory config
+if (-not (Test-Path $InventoryConfigPath)) {
+    throw "Inventory config not found: $InventoryConfigPath"
+}
+
+try {
+    $configContent = Get-Content -Path $InventoryConfigPath -Raw
+    $config = $configContent | ConvertFrom-Json
+} catch {
+    throw "Failed to parse inventory config: $InventoryConfigPath. $($_.Exception.Message)"
+}
+
+if (-not $config.servers -or $config.servers.Count -eq 0) {
+    throw "Inventory config has no servers: $InventoryConfigPath"
+}
+
+$targetServers = $config.servers
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
@@ -41,11 +64,20 @@ foreach ($server in $targetServers) {
     
     Write-Host "[$currentServer/$totalServers] Processing: $($server.ServerName)" -ForegroundColor Yellow
     Write-Host "  Description: $($server.Description)" -ForegroundColor Gray
-    Write-Host "  Drive: $($server.DriveLetter):" -ForegroundColor Gray
+    $driveLetter = if ($server.appsDriveLetter) { $server.appsDriveLetter } elseif ($server.DriveLetter) { $server.DriveLetter } else { "E" }
+
+    Write-Host "  Drive: ${driveLetter}:" -ForegroundColor Gray
+    Write-Host "  Scan Method: $(if ($UseRemoting) { 'Remoting' } else { 'SMB' })" -ForegroundColor Gray
+    Write-Host "  Max Depth: $MaxDepth" -ForegroundColor Gray
+    Write-Host "  Include Files: $([bool]$IncludeFiles)" -ForegroundColor Gray
     Write-Host ""
     
     try {
-        & $ScriptPath -ServerName $server.ServerName -DriveLetter $server.DriveLetter
+        if (-not $server.ServerName) {
+            throw "ServerName missing in inventory config entry."
+        }
+
+        & $ScriptPath -ServerName $server.ServerName -DriveLetter $driveLetter -MaxDepth $MaxDepth -UseRemoting $UseRemoting -IncludeFiles $IncludeFiles
         
         if ($LASTEXITCODE -eq 0 -or $?) {
             Write-Host "  ✓ Success" -ForegroundColor Green

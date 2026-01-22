@@ -6,7 +6,7 @@ PowerShell scripts for remote server research and inventory collection.
 
 ## 📋 Overview
 
-These scripts connect to Windows servers via SMB to inventory file systems, applications, and services. Output is saved to local cache and logs for analysis.
+These scripts connect to Windows servers via PowerShell Remoting or SMB to inventory file systems, applications, and services. Output is saved to local cache and logs for analysis.
 
 ---
 
@@ -14,24 +14,32 @@ These scripts connect to Windows servers via SMB to inventory file systems, appl
 
 **PowerShell Version**: All scripts use **PowerShell Core (pwsh)** unless they require Windows-specific APIs.
 
+### Inventory Config
+
+Server targets for batch inventory runs are stored in:
+
+- `config/inventory/servers.json`
+
 ### Drive Inventory
 
 #### `Get-RemoteDriveInventory.ps1`
 
-Main script to inventory remote server E: drives via SMB.
+Main script to inventory remote server drives via PowerShell Remoting or SMB.
 
 **Requirements**: PowerShell Core 7.0+ (pwsh)
 
 **Usage**:
 ```powershell
-pwsh .\Get-RemoteDriveInventory.ps1 -ServerName "EG-INTEGRATE-01" -DriveLetter "E"
-pwsh .\Get-RemoteDriveInventory.ps1 -ServerName "EG-WebApps-01" -DriveLetter "E"
-pwsh .\Get-RemoteDriveInventory.ps1 -ServerName "EG-WebApps-05" -DriveLetter "E"
+pwsh .\Get-RemoteDriveInventory.ps1 -ServerName "EG-INTEGRATE-01" -DriveLetter "E" -UseRemoting -MaxDepth 4
+pwsh .\Get-RemoteDriveInventory.ps1 -ServerName "EG-WebApps-01" -DriveLetter "E" -UseRemoting -MaxDepth 4
+pwsh .\Get-RemoteDriveInventory.ps1 -ServerName "EG-WebApps-05" -DriveLetter "E" -UseRemoting -MaxDepth 4
 ```
 
-**Output**: `cache/{servername}-E$-inventory.json`
+**Notes**:
+- PowerShell Remoting (WinRM) must be enabled and accessible.
+- SMB connections via UNC paths require Windows or SMB client on Linux/macOS.
 
-**Note**: SMB connections via UNC paths require Windows or SMB client on Linux/macOS.
+**Output**: `cache/{servername}-E$-inventory.json`
 
 ### IIS Configuration
 
@@ -187,12 +195,12 @@ scripts/
 3. **Run inventory script**:
    ```powershell
    cd scripts
-   pwsh .\Get-RemoteDriveInventory.ps1 -ServerName "EG-INTEGRATE-01" -DriveLetter "E"
+   pwsh .\Get-RemoteDriveInventory.ps1 -ServerName "EG-INTEGRATE-01" -DriveLetter "E" -UseRemoting -MaxDepth 4
    ```
 
    Or use the batch script:
    ```powershell
-   pwsh .\Invoke-AllServerInventory.ps1
+   pwsh .\Invoke-AllServerInventory.ps1 -InventoryConfigPath "..\config\inventory\servers.json"
    ```
 
 3. **Review output**:

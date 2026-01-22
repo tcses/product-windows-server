@@ -11,6 +11,8 @@ Complete inventory of all applications hosted on Windows IIS servers.
 
 This document provides a comprehensive roster of all applications hosted on Windows Server infrastructure, including production, test, and training environments.
 
+**GitHub Repo** fields are included for each project. Use `TBD` when the repository is not yet identified.
+
 ---
 
 ## 🎓 CampusNexus (Student Information System)
@@ -37,6 +39,8 @@ This document provides a comprehensive roster of all applications hosted on Wind
 
 **Training URLs**:
 - `trainnexus-lb.tcsedsystem.edu` (load balancer)
+
+**GitHub Repo**: N/A (vendor managed)
 
 **Backend Servers**:
 - **Production**: PRD-CNWEB-01, 02, 03 (Windows/IIS) - Planned
@@ -66,6 +70,8 @@ This document provides a comprehensive roster of all applications hosted on Wind
 **Hosting**: Windows IIS  
 **Code**: Microsoft .NET
 
+**GitHub Repo**: N/A (vendor managed)
+
 **Backend Servers**:
 - **Production**: PRD-CVAPI-01 (Windows/IIS) - Planned
 - **Current**: EG-CVAPI-01 (Windows/IIS) - Active
@@ -81,6 +87,8 @@ This document provides a comprehensive roster of all applications hosted on Wind
 **Hosting**: Windows IIS  
 **Code**: Microsoft .NET
 
+**GitHub Repo**: N/A (vendor managed)
+
 **Production URLs**:
 - `portal.thechicagoschool.edu`
 - `portal.pacificoaks.edu`
@@ -93,6 +101,9 @@ This document provides a comprehensive roster of all applications hosted on Wind
 - **Current**: EG-CNPORT-01 (Windows/IIS) - Active
 
 **Function**: Student and staff portal hosting
+
+**Subcomponents**:
+- Payflow harvesters (payment reconciliation/feeds)
 
 ---
 
@@ -109,9 +120,47 @@ This document provides a comprehensive roster of all applications hosted on Wind
 
 **URL**: `https://apps.tcsedsystem.edu`
 
+**GitHub Repo**: TBD
+
 **Backend Servers**: EG-WebApps-* (Windows/IIS)
 
 **Function**: User management, group membership, onboarding automation, password reset
+
+**Infrastructure**:
+- Load Balancer: f5 (current) / Cloudflare Tunnel (planned)
+- SSL, CDN, WAF: Cloudflare
+- Backend: Adjacent SQL Cluster
+- Monitoring: Azure Arc, LogicMonitor, Datadog
+
+---
+
+### Faculty Finder
+
+**Product**: Faculty Finder  
+**Environment**: Production  
+**Hosting**: Windows IIS (classic), AWS Elastic Beanstalk (trial)  
+**Code**: Microsoft .NET  
+**Tenancy**: Multi-tenant (IIS), Single-tenant (UWS trial)  
+**Data Security**: TBD
+
+**URL**: TBD
+
+**GitHub Repo**: `https://github.com/tcses/src-net-staff-directory/`
+
+**Backend Servers**: EG-WebApps-* (Windows/IIS)
+
+**Function**: Faculty directory
+
+**Notes**:
+- Classic IIS deployment serves most schools.
+- Next-gen trial runs in AWS Elastic Beanstalk and currently supports UWS only.
+- This app is used for live-fire hosting experiments, so production has multiple flavors.
+- Long-term direction is a Kubernetes-hosted Faculty Finder; Elastic Beanstalk likely deprecated.
+
+**AWS Deployment (Terraform)**:
+- Repo: `src-net-staff-directory/terraform`
+- Provisions an **EKS** cluster via `tcses/src-aws-terraform-modules` (modules/compute/eks).
+- Environment scaffolding exists for `dev` and `test` under `terraform/environments/`.
 
 **Infrastructure**:
 - Load Balancer: f5 (current) / Cloudflare Tunnel (planned)
@@ -132,6 +181,8 @@ This document provides a comprehensive roster of all applications hosted on Wind
 
 **URL**: `https://integration.tcsedsystem.edu`
 
+**GitHub Repo**: N/A (Azure DevOps)
+
 **Backend Servers**: EG-Integrate-01 (Windows/IIS)
 
 **Function**: Listener for Salesforce.com backend student lead PII data sync, custom Windows services, scheduled tasks
@@ -143,7 +194,44 @@ This document provides a comprehensive roster of all applications hosted on Wind
 - Monitoring: Azure Arc, LogicMonitor, Datadog
 - Logs: E: drive application logs
 
+**Source Control**:
+- Integration service codebase is still in **Azure DevOps** (not GitHub).
+- GitHub references are noted below when available.
+
+#### Integration Sub-Inventory
+
+Snapshot of integration components for reference. Add GitHub links when identified.
+
+| Integration | Host/Service | Location | Source Control | Repo/Link | Notes |
+|-------------|--------------|----------|----------------|-----------|-------|
+| Integration Engine | Windows services / scheduled tasks | EG-Integrate-01 (E:) | Azure DevOps | TBD | Core integration service |
+
 **Migration**: PRD-Integrate-01 via backup restore (EG-Integrate-01 is new, only 6 months old)
+
+---
+
+### AIM Powertools API
+
+**Product**: AIM Powertools API  
+**Environment**: TBD  
+**Hosting**: Windows IIS  
+**Code**: Microsoft .NET  
+**Tenancy**: TBD  
+**Data Security**: TBD
+
+**URL**: TBD
+
+**GitHub Repo**: TBD
+
+**Backend Servers**: EG-WebApps-* (Windows/IIS)
+
+**Function**: API service (details TBD)
+
+**Infrastructure**:
+- Load Balancer: f5 (current) / Cloudflare Tunnel (planned)
+- SSL, CDN, WAF: Cloudflare
+- Backend: Adjacent SQL Server Cluster
+- Monitoring: Azure Arc, LogicMonitor, Datadog
 
 ---
 
@@ -163,6 +251,8 @@ This document provides a comprehensive roster of all applications hosted on Wind
 - `https://apps.uws.edu`
 - `https://apps.collegesoflaw.edu`
 - `https://apps.saybrook.edu`
+
+**GitHub Repo**: TBD
 
 **Backend Servers**: EG-WebApps-* (Windows/IIS)
 
@@ -189,6 +279,8 @@ This document provides a comprehensive roster of all applications hosted on Wind
 
 **URL**: `https://cashier.tcsedsystem.edu`
 
+**GitHub Repo**: TBD
+
 **Infrastructure**:
 - Load Balancer: AWS EC2 Application Load Balancer / Elastic Beanstalk Autoscaling
 - SSL: AWS Certificate Manager
@@ -196,6 +288,9 @@ This document provides a comprehensive roster of all applications hosted on Wind
 - WAF: AWS VPC Firewall
 - Backend: AWS DynamoDB, AWS Queue Service, AWS Lambda Functions, AWS Secrets Manager
 - Monitoring: AWS CloudWatch, Datadog
+
+**Deployment**:
+- Windows deployment uses Elastic Beanstalk, Terraform, and GitHub Actions.
 
 **Function**: Staff-facing application for Student Accounts and Admissions teams to accept phone payments and process credit card payments
 
@@ -213,6 +308,8 @@ This document provides a comprehensive roster of all applications hosted on Wind
 **Data Security**: Egress for PII
 
 **URL**: `https://service.tcsedsystem.edu`
+
+**GitHub Repo**: TBD
 
 **Backend Servers**: EG-WebApps-* (Windows/IIS)
 
@@ -247,6 +344,8 @@ This document provides a comprehensive roster of all applications hosted on Wind
 - `https://apply.collegesoflaw.edu`
 - `https://apply.thechicagoschool.edu`
 
+**GitHub Repo**: TBD (historic)
+
 **Backend Servers**: EG-WebApps-* (Windows/IIS) - Decommissioned
 
 **Function**: Prospective student application processing (replaced by new system)
@@ -274,6 +373,8 @@ This document provides a comprehensive roster of all applications hosted on Wind
 | Academic Portal | Production | EG-CNPORT-01 | 🟢 Active | Migrating to PRD-CNPORT-01 |
 | Support Desk | Production | EG-WebApps-* | 🟢 Active | apps.tcsedsystem.edu |
 | Integration System | Production | EG-Integrate-01 | 🟢 Active | integration.tcsedsystem.edu |
+| Faculty Finder | TBD | EG-WebApps-* | 🟡 TBD | Faculty directory |
+| AIM Powertools API | TBD | EG-WebApps-* | 🟡 TBD | API service |
 | Custom Portals | Production | EG-WebApps-* | 🟢 Active | apps.{school}.edu |
 | Cashiering Site | Production | AWS EC2 | 🟢 Active | cashier.tcsedsystem.edu (AWS) |
 | Cashiering API | Production | EG-WebApps-* | 🟢 Active | service.tcsedsystem.edu |

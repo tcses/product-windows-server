@@ -1,0 +1,25 @@
+{
+  "servers": [
+    {
+      "serverName": "EG-INTEGRATE-01",
+      "appsDriveLetter": "E",
+      "description": "Integration Server",
+      "role": "Integration Services",
+      "environment": "Production"
+    },
+    {
+      "serverName": "EG-WebApps-01",
+      "appsDriveLetter": "E",
+      "description": "Web Applications Server #1",
+      "role": "Web Applications",
+      "environment": "Production"
+    },
+    {
+      "serverName": "EG-WebApps-05",
+      "appsDriveLetter": "E",
+      "description": "Web Applications Server #5",
+      "role": "Web Applications",
+      "environment": "Production"
+    }
+  ]
+}

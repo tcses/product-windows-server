@@ -11,6 +11,7 @@ This directory contains comprehensive documentation for all applications hosted 
 - **[Application Roster](roster.md)** - Complete inventory of all applications
 - **[CampusVue/CampusNexus](campusvue/README.md)** - Student Information System documentation
 - **[Architecture](architecture.md)** - Overall application architecture and deployment patterns
+- **[Deployment Configuration](../deployments/README.md)** - Deployment tooling and runners
 
 ---
 
@@ -26,6 +27,8 @@ This directory contains comprehensive documentation for all applications hosted 
 - **Custom Student/Staff Portals** - School-specific portals
 - **Cashiering Site** - Payment processing
 - **Cashiering Site API** - Backend API service
+- **Faculty Finder** - Faculty directory
+- **AIM Powertools API** - API service (details TBD)
 
 ### Deprecated Applications (Historic)
 - **Prospective Student Application Portals** - Deprecated in 2025, decommissioned (see [roster.md](roster.md#-deprecated-applications-historic-reference))
