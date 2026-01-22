@@ -24,9 +24,11 @@ This directory contains comprehensive documentation for all applications hosted 
 - **Support Desk** - User management and password reset
 - **Integration System** - Salesforce sync and integrations
 - **Custom Student/Staff Portals** - School-specific portals
-- **Prospective Student Application Portals** - Application processing
 - **Cashiering Site** - Payment processing
 - **Cashiering Site API** - Backend API service
+
+### Deprecated Applications (Historic)
+- **Prospective Student Application Portals** - Deprecated in 2025, decommissioned (see [roster.md](roster.md#-deprecated-applications-historic-reference))
 
 ### Integration Services
 - **Integration Engine** - Scheduled task execution

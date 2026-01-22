@@ -95,8 +95,9 @@ Windows Server infrastructure hosts multiple categories of applications:
 - Support Desk (apps.tcsedsystem.edu)
 - Integration System (integration.tcsedsystem.edu)
 - Custom Student/Staff Portals (apps.{school}.edu)
-- Prospective Student Application Portals (apply.{school}.edu)
 - Cashiering Site API (service.tcsedsystem.edu)
+
+**Note**: Prospective Student Application Portals (apply.{school}.edu) were deprecated in 2025 and decommissioned. See [Application Roster](../applications/roster.md#-deprecated-applications-historic-reference) for historic details.
 
 #### Integration Servers
 

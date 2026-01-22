@@ -176,33 +176,6 @@ This document provides a comprehensive roster of all applications hosted on Wind
 
 ---
 
-### Prospective Student Application Portals
-
-**Product**: Application Processing Portals  
-**Environment**: Production  
-**Hosting**: Windows IIS  
-**Code**: Microsoft .NET  
-**Tenancy**: Multi-Tenant  
-**Data Security**: Egress for PCI, Store for PII
-
-**URLs**:
-- `https://apply.pacificoaks.edu`
-- `https://apply.saybrook.edu`
-- `https://apply.kansashsc.edu`
-- `https://apply.uws.edu`
-- `https://apply.collegesoflaw.edu`
-- `https://apply.thechicagoschool.edu`
-
-**Backend Servers**: EG-WebApps-* (Windows/IIS)
-
-**Function**: Prospective student application processing
-
-**Infrastructure**:
-- Load Balancer: f5 (current) / Cloudflare Tunnel (planned)
-- SSL, CDN, WAF: Cloudflare
-- Backend: Adjacent SQL Server Cluster
-- Monitoring: Azure Arc, LogicMonitor, Datadog
-
 ---
 
 ### Cashiering Site
@@ -266,7 +239,60 @@ This document provides a comprehensive roster of all applications hosted on Wind
 | Support Desk | Production | EG-WebApps-* | 🟢 Active | apps.tcsedsystem.edu |
 | Integration System | Production | EG-Integrate-01 | 🟢 Active | integration.tcsedsystem.edu |
 | Custom Portals | Production | EG-WebApps-* | 🟢 Active | apps.{school}.edu |
-| Application Portals | Production | EG-WebApps-* | 🟢 Active | apply.{school}.edu |
+| Application Portals | Production | EG-WebApps-* | 🔴 Deprecated (2025) | apply.{school}.edu |
+| Cashiering Site | Production | AWS EC2 | 🟢 Active | cashier.tcsedsystem.edu (AWS) |
+| Cashiering API | Production | EG-WebApps-* | 🟢 Active | service.tcsedsystem.edu |
+
+---
+
+## 🔴 Deprecated Applications (Historic Reference)
+
+### Prospective Student Application Portals
+
+**Status**: 🔴 **Deprecated in 2025 - Decommissioned**  
+**Product**: Application Processing Portals  
+**Environment**: Production (Historic)  
+**Hosting**: Windows IIS  
+**Code**: Microsoft .NET  
+**Tenancy**: Multi-Tenant  
+**Data Security**: Egress for PCI, Store for PII
+
+**URLs** (Historic):
+- `https://apply.pacificoaks.edu`
+- `https://apply.saybrook.edu`
+- `https://apply.kansashsc.edu`
+- `https://apply.uws.edu`
+- `https://apply.collegesoflaw.edu`
+- `https://apply.thechicagoschool.edu`
+
+**Backend Servers**: EG-WebApps-* (Windows/IIS) - Decommissioned
+
+**Function**: Prospective student application processing (replaced by new system)
+
+**Infrastructure** (Historic):
+- Load Balancer: f5
+- SSL, CDN, WAF: Cloudflare
+- Backend: Adjacent SQL Server Cluster
+- Monitoring: Azure Arc, LogicMonitor, Datadog
+
+**Decommission Date**: 2025  
+**Reason**: Replaced by new application processing system  
+**Note**: Kept in documentation for historic reference only
+
+---
+
+## 📊 Application Summary (Active Applications Only)
+
+| Application | Environment | Servers | Status | Notes |
+|-------------|-------------|---------|--------|-------|
+| CampusNexus Web | Production | EG-CNWEB-01, 02, 03 | 🟢 Active | Migrating to PRD-CNWEB-* |
+| CampusNexus Web | Test | TST-CNWEB-* | 🟡 Planned | Workaround: newtestnexus.tcsedsystem.edu |
+| CampusNexus Web | Training | Training pool | 🟢 Active | trainnexus-lb.tcsedsystem.edu |
+| CampusNexus API | Production | EG-CVAPI-01 | 🟢 Active | Migrating to PRD-CVAPI-01 |
+| Academic Portal | Production | EG-CNPORT-01 | 🟢 Active | Migrating to PRD-CNPORT-01 |
+| Support Desk | Production | EG-WebApps-* | 🟢 Active | apps.tcsedsystem.edu |
+| Integration System | Production | EG-Integrate-01 | 🟢 Active | integration.tcsedsystem.edu |
+| Custom Portals | Production | EG-WebApps-* | 🟢 Active | apps.{school}.edu |
 | Cashiering Site | Production | AWS EC2 | 🟢 Active | cashier.tcsedsystem.edu (AWS) |
 | Cashiering API | Production | EG-WebApps-* | 🟢 Active | service.tcsedsystem.edu |
 
