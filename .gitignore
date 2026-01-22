@@ -1,0 +1,51 @@
+# Windows Server Repository - Git Ignore
+
+# Sensitive Information
+*.env
+*.key
+*.pem
+*.ppk
+*.p12
+*.pfx
+*.cer
+*.crt
+*.pwd
+*.pass
+*.secret
+*credentials*
+*secrets*
+*vault*
+
+# Server Inventory Data (if contains sensitive info)
+inventory/*.json
+inventory/*.yml
+inventory/*.yaml
+!inventory/*.example.*
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Temporary Files
+*.tmp
+*.temp
+*.bak
+*.backup
+*~
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Documentation Build
+_site/
+.jekyll-cache/
