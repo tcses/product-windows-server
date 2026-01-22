@@ -1,5 +1,9 @@
 # Windows Server - Documentation and Inventory
 
+![Windows](https://img.shields.io/badge/Windows-Server-0078D6?logo=windows)
+![IIS](https://img.shields.io/badge/IIS-Web_Servers-0078D4)
+![CampusNexus](https://img.shields.io/badge/CampusNexus-SIS-00A1E0)
+
 Comprehensive documentation and inventory for Windows Server infrastructure, including IIS web servers, CampusVue (CampusNexus) servers, custom applications, and Perceptive Content servers.
 
 ---
@@ -80,10 +84,15 @@ For Windows server automation and deployment:
 
 ## 🔗 Related Repositories
 
+### Infrastructure Documentation
+- **[product-github](https://github.com/tcses/product-github)** - GitHub standards, workflows, and CI/CD patterns
+- **[product-rhel-servers](https://github.com/tcses/product-rhel-servers)** - RHEL server documentation
+- **[product-cloudflare](https://github.com/tcses/product-cloudflare)** - Cloudflare infrastructure management
+- **[proj-appdev-planning](https://github.com/tcses/proj-appdev-planning)** - Application development planning and knowledge base
+
+### Automation
 - **[src-ansible-win](https://github.com/tcses/src-ansible-win)** - Active Windows server automation
 - **[src-ansible-rhel](https://github.com/tcses/src-ansible-rhel)** - RHEL server automation
-- **[proj-appdev-planning](https://github.com/tcses/proj-appdev-planning)** - Application development planning and knowledge base
-- **[product-rhel-servers](https://github.com/tcses/product-rhel-servers)** - RHEL server documentation (legacy)
 
 ---
 
