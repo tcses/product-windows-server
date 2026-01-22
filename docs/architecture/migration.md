@@ -52,6 +52,21 @@ Migration of Windows Server infrastructure from Elk Grove colocation to Chicago 
 
 **Consolidation**: 8 servers → 4 servers (**50% reduction**)
 
+### Integration Servers
+
+| Current (Elk Grove) | Target (Chicago) | Status | Migration Method |
+|---------------------|-------------------|--------|------------------|
+| EG-Integrate-01 | PRD-Integrate-01 | 🟡 Planned | Backup restore (clone) |
+
+**Note**: EG-Integrate-01 is a new server (only 6 months old at Elk Grove). Migration will be via backup restore/clone method rather than fresh build.
+
+**Applications**:
+- Custom Windows services
+- Scheduled tasks
+- Background processing
+- Integration Engine
+- Application logs (E: drive)
+
 ---
 
 ## 🏗️ Architecture Migration
@@ -72,7 +87,7 @@ EG-WebApps-01-08 (Windows/IIS)
 **Components**:
 - F5 BIG-IP hardware load balancer
 - Windows-local proxy services (CampusNexus)
-- 13 Windows/IIS servers
+- 14 Windows/IIS servers (including EG-Integrate-01)
 
 ### Target Architecture (Chicago)
 
@@ -94,7 +109,7 @@ Internet
 **Components**:
 - Cloudflare CDN/WAF (replaces F5)
 - Cloudflare Tunnel on RHEL (replaces Windows-local proxies)
-- 9 Windows/IIS servers (consolidated from 13)
+- 10 Windows/IIS servers (consolidated from 14, plus EG-Integrate-01 → PRD-Integrate-01)
 
 ---
 
