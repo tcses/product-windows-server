@@ -14,7 +14,9 @@ These scripts connect to Windows servers via SMB to inventory file systems, appl
 
 **PowerShell Version**: All scripts use **PowerShell Core (pwsh)** unless they require Windows-specific APIs.
 
-### `Get-RemoteDriveInventory.ps1`
+### Drive Inventory
+
+#### `Get-RemoteDriveInventory.ps1`
 
 Main script to inventory remote server E: drives via SMB.
 
@@ -27,7 +29,76 @@ pwsh .\Get-RemoteDriveInventory.ps1 -ServerName "EG-WebApps-01" -DriveLetter "E"
 pwsh .\Get-RemoteDriveInventory.ps1 -ServerName "EG-WebApps-05" -DriveLetter "E"
 ```
 
+**Output**: `cache/{servername}-E$-inventory.json`
+
 **Note**: SMB connections via UNC paths require Windows or SMB client on Linux/macOS.
+
+### IIS Configuration
+
+#### `Get-IISConfiguration.ps1`
+
+Reverse engineer complete IIS configuration including:
+- **Sites**: All IIS web sites with bindings, applications, virtual directories
+- **Application Pools**: Configuration, runtime settings, process model, recycling
+- **Bindings**: Protocol, IP, port, host header, SSL certificates
+- **Custom Settings**: Global modules, handlers, default documents, request filtering
+- **SSL Certificates**: All certificates in LocalMachine\My store
+
+**Requirements**: PowerShell Core 7.0+, WinRM access, WebAdministration module on target
+
+**Usage**:
+```powershell
+pwsh .\Get-IISConfiguration.ps1 -ServerName "EG-WebApps-01"
+```
+
+**Output**: `cache/{servername}-IIS-config.json`
+
+**What it captures**:
+- Site bindings (HTTP, HTTPS, host headers)
+- Application pool settings (runtime version, pipeline mode, identity)
+- Custom IIS modules and handlers
+- SSL certificate bindings
+- Virtual directory mappings
+- Custom applicationHost.config settings
+
+### Services & Scheduled Tasks
+
+#### `Get-ServerServices.ps1`
+
+Inventory Windows services and scheduled tasks.
+
+**Requirements**: PowerShell Core 7.0+, WinRM access
+
+**Usage**:
+```powershell
+pwsh .\Get-ServerServices.ps1 -ServerName "EG-INTEGRATE-01"
+```
+
+**Output**: `cache/{servername}-Services-config.json`
+
+**What it captures**:
+- Windows services (status, start type, service account, path)
+- Scheduled tasks (triggers, actions, last run time)
+
+### Batch Scripts
+
+#### `Invoke-AllServerInventory.ps1`
+
+Run E: drive inventory on all target servers.
+
+**Usage**:
+```powershell
+pwsh .\Invoke-AllServerInventory.ps1
+```
+
+#### `Invoke-CompleteServerAnalysis.ps1`
+
+Run complete analysis (drive + IIS + services) on all target servers.
+
+**Usage**:
+```powershell
+pwsh .\Invoke-CompleteServerAnalysis.ps1
+```
 
 **Output**:
 - Directory listings saved to `cache/{servername}-{drive}-inventory.json`
