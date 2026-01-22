@@ -63,9 +63,17 @@ For Windows server automation and deployment:
 - **[Future State](docs/inventory/future-state.md)** - Planned servers (PRD-* naming)
 - **[Perceptive Content](docs/inventory/perceptive-content.md)** - Perceptive Content servers
 
+### Applications
+
+- **[Application Overview](docs/applications/README.md)** - Application documentation index
+- **[Application Roster](docs/applications/roster.md)** - Complete application inventory
+- **[CampusVue/CampusNexus](docs/applications/campusvue/README.md)** - Student Information System documentation
+- **[CampusNexus URLs](docs/applications/campusvue/URLS.md)** - URL inventory and environments
+
 ### Architecture
 
-- **[Architecture Planning](docs/architecture/README.md)** - Overall Windows server architecture
+- **[Architecture Overview](docs/architecture/README.md)** - Overall Windows server architecture
+- **[System Architecture](docs/architecture/architecture.md)** - Complete architecture documentation
 - **[Migration Planning](docs/architecture/migration.md)** - Elk Grove → Chicago migration
 
 ---
